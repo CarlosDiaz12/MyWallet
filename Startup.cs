@@ -28,8 +28,7 @@ namespace MyWallet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            var optionsBuilder = new DbContextOptionsBuilder<DailyExpensesContext>();
-            optionsBuilder.UseInMemoryDatabase("WalletDB");
+            services.AddDbContext<DailyExpensesContext>(opts => opts.UseInMemoryDatabase("WalletDB"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,5 +8,7 @@ namespace MyWallet.Data
         public DailyExpensesContext(DbContextOptions<DailyExpensesContext> contextOptions): base(contextOptions) { }
         public DailyExpensesContext() { }
         public DbSet<Expense> Expenses { get; set; }
+
+        
     }
 }
