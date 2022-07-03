@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyWallet.Data;
 using NLog.Extensions.Logging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +31,16 @@ namespace MyWallet
         {
             services.AddControllers();
             services.AddDbContext<DailyExpensesContext>(opts => opts.UseInMemoryDatabase("WalletDB"));
+            services.AddSingleton<Serilog.ILogger>(_ =>
+            {
+                var connString = Configuration["SerilogConfig:ConnectionString"];
+                var tableName = Configuration["SerilogConfig:TableName"];
+                return new LoggerConfiguration().WriteTo.MSSqlServer(connString, tableName).CreateLogger();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

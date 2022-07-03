@@ -13,11 +13,11 @@ namespace MyWallet.Controllers
     public class WalletController : ControllerBase
     {
         private readonly DailyExpensesContext _context;
-        private readonly ILogger<WalletController> _logger;
-        public WalletController(DailyExpensesContext context, ILogger<WalletController> logger)
+        private readonly Serilog.ILogger _logger;
+        public WalletController(DailyExpensesContext context, ILogger<WalletController> logger, Serilog.ILogger serilogLogger)
         {
             _context = context;
-            _logger = logger;
+            _logger = serilogLogger;
         }
 
         [HttpGet]
@@ -40,7 +40,7 @@ namespace MyWallet.Controllers
 
             if (item == null)
             {
-                _logger.LogInformation($"Daily Expense for Id: {Id} does not exists.");
+                _logger.Information($"Daily Expense for Id: {Id} does not exists.");
                 return NotFound();
             }
 
@@ -58,13 +58,13 @@ namespace MyWallet.Controllers
         {
             if (model == null)
             {
-                _logger.LogError("The request object is null");
+                _logger.Error("The request object is null");
                 return BadRequest();
             }
 
             if (model.Amount > 200)
             {
-                _logger.LogError("The expense amount is not allowed");
+                _logger.Error("The expense amount is not allowed");
                 ModelState.AddModelError(string.Empty, "Amount is not allowed");
             }
 
