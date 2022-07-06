@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MyWallet.Data;
+using MyWallet.ErrorHandlers;
 using NLog.Extensions.Logging;
 using Serilog;
 using System;
@@ -29,7 +30,10 @@ namespace MyWallet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(x =>
+            {
+                x.Filters.Add<WebAPIExceptionFilter>();
+            });
             services.AddDbContext<DailyExpensesContext>(opts => opts.UseInMemoryDatabase("WalletDB"));
             services.AddSingleton<Serilog.ILogger>(_ =>
             {
