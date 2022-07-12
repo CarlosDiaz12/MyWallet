@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyWallet.Data;
 using MyWallet.Model;
 using MyWallet.Model.DTOs;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyWallet.Controllers
 {
@@ -21,22 +22,22 @@ namespace MyWallet.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var result = _context.Expenses
+            var result = await _context.Expenses
                                 .Select(x => new ExpenseDto
                                 {
                                     Description = x.Description,
                                     Amount = x.Amount
                                 })
-                                .ToList();
+                                .ToListAsync();
             return Ok(result);
         }
 
         [HttpGet("{Id:int}")]
-        public IActionResult Get(int Id)
+        public async Task<IActionResult> Get(int Id)
         {
-            var item = _context.Expenses.Find(Id);
+            var item = await _context.Expenses.FindAsync(Id);
 
             if (item == null)
             {
@@ -54,7 +55,7 @@ namespace MyWallet.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] ExpenseDto model)
+        public async Task<IActionResult> Post([FromBody] ExpenseDto model)
         {
             if (model == null)
             {
@@ -78,8 +79,8 @@ namespace MyWallet.Controllers
                 Description = model.Description,
                 Amount = model.Amount
             };
-            _context.Expenses.Add(newExpense);
-            _context.SaveChanges();
+            await _context.Expenses.AddAsync(newExpense);
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
