@@ -30,6 +30,12 @@ namespace MyWallet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // response compression
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+            });
+
             services.AddControllers(x =>
             {
                 x.Filters.Add<WebAPIExceptionFilter>();
@@ -56,6 +62,8 @@ namespace MyWallet
             app.UseRouting();
 
             app.UseAuthorization();
+            // response compression
+            app.UseResponseCompression();
 
             app.UseEndpoints(endpoints =>
             {
